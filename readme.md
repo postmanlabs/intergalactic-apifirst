@@ -16,13 +16,13 @@ Our [Code of Conduct](https://www.postman.com/legal/events-code-of-conduct/) wil
 
 In this session, we will help everyone understand what we mean by "API First", and common terminology you'll hear throughout the day. This session will be more lecture-style.
 
-[Link to notes](./1%20-%20foundation.md)
+- [Link to notes](./1%20-%20foundation.md)
 
 ### Next-level Concepts With API-first
 
 The second session of the day will go hands-on with developing an API using the OpenAPI specification and teaching the principles of API-First in a manner that you can follow along.
 
-[Link to notes](./2%20-%20next-level%20concepts.md)
+- [Link to notes](./2%20-%20next-level%20concepts.md)
 
 ### Advanced API Workflows (2 parts)
 
@@ -30,8 +30,8 @@ The afternoon will be broken into two parts where we will take what you've learn
 
 Each afternoon session is 75 minutes in length, and will be hands-on practice and Q&A for your API-First design, and looking at concepts such as mock servers, advanced testing workflows, monitoring and deployment.
 
-[Link to notes](./3%20-%20advanced%20workflows.md)
-[OpenAPI Specification](./books-api.yaml)
+- [Link to notes](./3%20-%20advanced%20workflows.md)
+- [OpenAPI Specification](./books-api.yaml)
 
 ## Follow-Along Format
 
