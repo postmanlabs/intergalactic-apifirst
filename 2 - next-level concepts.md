@@ -323,6 +323,7 @@ components:
           items:
             $ref: "#/components/schemas/BookSummary"
 ```
+(full description of these portions of the file can be found in [this file](./openapi-books/07-bookshop-errors.openapi.yaml))
 
 ### Fetching a Single Book
 
@@ -358,6 +359,7 @@ paths:
         "500":
           $ref: "#/components/responses/UnexpectedError"
 ```
+(full description of these portions of the file can be found in [this file](./openapi-books/06-bookshop-add-book.openapi.yaml))
 
 ### Adding an endpoint to Delete a book
 
@@ -392,8 +394,7 @@ paths:
         "500":
           $ref: "#/components/responses/UnexpectedError"
 ```
-
-https://github.com/postman-open-technologies/api-first-space-camp/blob/main/10-bookshop-delete-a-book.openapi.yaml
+(full description of these portions of the file can be found in [this file](./openapi-books/10-bookshop-delete-a-book.openapi.yaml))
 
 
 ### SECURITY !!
