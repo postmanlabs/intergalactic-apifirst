@@ -1,4 +1,4 @@
-# Describing data returned by Search Books more efficiently
+# Adding search parameters on Search Books
 openapi: 3.0.3
 
 info:
@@ -18,18 +18,30 @@ paths:
     get:
       summary: Search books
       operationId: searchBooks
+      parameters:
+        # A parameter defined inline
+        - name: author
+          # This is a query parameter GET /books?author=arnaud
+          in: query
+          # It is recommended to avoid required query parameters, makes the API less user friendly
+          required: false
+          # Sometimes the name and schema are not enough, neveer hesitate to take advantage of descriptions to provide more information
+          description: "Complete or partial author name, , can be typed phonetically"
+          # Parameters use schema like response bodies
+          schema:
+            # Parameter can take advantage of reusable schemas
+            $ref: "#/components/schemas/QueryParameterString"
+        # Like schemas, parameters can be defined in components
+        # Allows to use the same definition across operations
+        - $ref: "#/components/parameters/Title"
       responses:
         "200":
           description: Books matching search parameters
           content:
             application/json:
                 schema:
-                  # A JSON pointer that reference a reusable schema
-                  # It is recommended to avoid inline schema definition at operation level
                   $ref: "#/components/schemas/Books"
                 examples:
-                  # Though tools can generate examples from JSON Schemas, crafting meaningful example is recommended
-                  # It helps to ensure the design is OK and will be helpful for people reading documentation (and mocking tools)
                   SomeBooks:
                     summary: A few books found
                     value:
@@ -57,9 +69,7 @@ paths:
                                 lastName: "Higginbotham"
                           stars: 4.7
 
-# Components holds reusable components
 components:
-  # Schemas holds reusable JSON schemas
   schemas:
     BookId:
       type: string
@@ -133,3 +143,17 @@ components:
           maxItems: 100
           items:
             $ref: "#/components/schemas/BookSummary"
+    # This schema is used in a query parameter
+    QueryParameterString:
+      type: string
+      maxLength: 100
+      minLength: 1
+  # Parameters holds reusable parameters
+  parameters:
+    Title:
+      name: title
+      in: query
+      description: "Complete or partial title, can be typed phonetically"
+      required: false
+      schema:
+        $ref: "#/components/schemas/QueryParameterString"

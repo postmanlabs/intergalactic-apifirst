@@ -115,8 +115,6 @@ What do we send back if no results are found?
 
 What are best practices around status codes to return for a scenario where the endpoint was called successfully but the result list was empty? What about a scenario where we were trying to find one specific book?
 
-
-
 ```yaml
 paths:
   /books:
@@ -205,6 +203,30 @@ What kind of data MUST the user send? Which data is optional, if any?
 What kind of response do we return? What are the benefits/implications of this choice?
 
 What do we send if a user doesn't give us correct information?
+
+```yaml
+    post:
+      summary: Add a book
+      operationId: addBook
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookCreate"
+      responses:
+        "201":
+          description: Book added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        "400":
+          description: Incorrect data provided
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Errors"
+```
 
 ### Error Handling
 
@@ -308,12 +330,71 @@ How would you add the path for adding a single book?
 
 Let's discuss how much data we should return in the response. Is it enough to send back a 200-series acknowledgement that we've done some work? What if we're still processing some background data like uploading a photo of the book cover?
 
+```yaml
+paths:
+
+  /books/{bookId}:
+    parameters:
+      - name: bookId
+        in: path
+        required: true
+        schema:
+          $ref: "#/components/schemas/BookId"
+        description: Book's [ISBN 13](https://www.isbn-international.org/content/what-isbn) (a standard book identifier)
+    get:
+      summary: Get a book detailed information
+      operationId: readBook
+      responses:
+        "200":
+          description: Book matching the provided `bookId`
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        "401":
+          $ref: "#/components/responses/AuthenticationError"
+        "404":
+          $ref: "#/components/responses/BookNotFoundError"
+        "500":
+          $ref: "#/components/responses/UnexpectedError"
+```
 
 ### Adding an endpoint to Delete a book
 
 Typically a very fast operation, with a 204 response which indicates no body data.
 
 But that raises the question of who is allowed to remove books from our database?
+
+```yaml
+paths:
+...
+  /books/{bookId}:
+    parameters:
+      - name: bookId
+        in: path
+        required: true
+        schema:
+          $ref: "#/components/schemas/BookId"
+        description: Book's [ISBN 13](https://www.isbn-international.org/content/what-isbn) (a standard book identifier)
+    get:
+      ...
+
+    delete:
+      summary: Delete a book
+      operationId: deleteBook
+      responses:
+        "204":
+          description: Book has been deleted
+        "401":
+          $ref: "#/components/responses/AuthenticationError"
+        "404":
+          $ref: "#/components/responses/BookNotFoundError"
+        "500":
+          $ref: "#/components/responses/UnexpectedError"
+```
+
+https://github.com/postman-open-technologies/api-first-space-camp/blob/main/10-bookshop-delete-a-book.openapi.yaml
+
 
 ### SECURITY !!
 

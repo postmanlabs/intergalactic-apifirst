@@ -1,0 +1,366 @@
+# Adding Get a book operation
+openapi: 3.0.3
+
+info:
+  title: Bookshop
+  version: "1.0"
+  description: |
+    ![OpenAPI Logo](https://avatars3.githubusercontent.com/u/16343502?v=3&s=100)
+
+    A demo _API_ to **discover** the **_[OpenAPI Specification](https://www.openapis.org/)_**.
+
+servers:
+  - description: The base path for all resources
+    url: /bookshop/v1
+
+paths:
+  /books:
+    get:
+      summary: Search books
+      operationId: searchBooks
+      parameters:
+        - name: author
+          in: query
+          required: false
+          description: "Complete or partial author name, , can be typed phonetically"
+          schema:
+            $ref: "#/components/schemas/QueryParameterString"
+        - $ref: "#/components/parameters/Title"
+      responses:
+        "200":
+          description: Books matching search parameters
+          content:
+            application/json:
+                schema:
+                  $ref: "#/components/schemas/Books"
+        # Those errors will be present on all operations
+        # Better take advantage of reusable responses       
+        "401":
+          $ref: "#/components/responses/AuthenticationError"
+        "500":
+          $ref: "#/components/responses/UnexpectedError"
+    post:
+      summary: Add a book
+      operationId: addBook
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookCreate"
+      responses:
+        "201":
+          description: Book added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        "400":
+          description: Incorrect data provided
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Errors"
+              examples:
+                VariousErrors:
+                  summary: Incorrect book identifier
+                  value:
+                    errors:
+                      - code: required
+                        location: body
+                        name: title
+                        path: $.title
+                        message: missing title
+                      - code: unknown
+                        location: body
+                        name: authors
+                        path: $.authors[0]
+                        message: Unknown author id
+        # Those errors will be present on all operations
+        # Better take advantage of reusable responses       
+        "401":
+          $ref: "#/components/responses/AuthenticationError"
+        "500":
+          $ref: "#/components/responses/UnexpectedError"
+  /books/{bookId}:
+    # Parameters defined at path level are applied to all operations defined in the path
+    parameters:
+      - name: bookId
+        # The parameter is in the path (between {})
+        in: path
+        # A path parameter is always required
+        required: true
+        # We can reuse the BookId schema defined previously
+        schema:
+          $ref: "#/components/schemas/BookId"
+        # Unfortunately we have duplicate the description
+        description: Book's [ISBN 13](https://www.isbn-international.org/content/what-isbn) (a standard book identifier)
+    get:
+      summary: Get a book detailed information
+      operationId: readBook
+      responses:
+        "200":
+          description: Book matching the provided `bookId`
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        "401":
+          $ref: "#/components/responses/AuthenticationError"
+        # The BookNotFoundError will be useful for the next operation we'll add
+        "404":
+          $ref: "#/components/responses/BookNotFoundError"
+        "500":
+          $ref: "#/components/responses/UnexpectedError"
+components:
+  schemas:
+    BookId:
+      type: string
+      pattern: (978|979)([0-9]{10})
+      description: Book's [ISBN 13](https://www.isbn-international.org/content/what-isbn) (a standard book identifier)
+    Amount:
+      properties:
+        value:
+          type: number
+          minimum: 0
+        currency:
+          type: string
+          description: An ISO 4217 currency code
+          minLength: 3
+          maxLength: 3
+          enum:
+            - USD
+            - EUR
+      required:
+        - value
+        - currency
+    Authors:
+      type: array
+      minItems: 1
+      items:
+        properties:
+          id:
+            type: string
+            description: A unique id identifying an author
+          firstName:
+            type: string
+          middleName:
+            type: string
+          lastName:
+            type: string
+        required:
+          - id
+          - firstName
+          - lastName
+    # What is returned in list if often a subset of a more complete schema
+    BookSummary:
+      properties:
+        id:
+          $ref: "#/components/schemas/BookId"
+        isbn:
+          $ref: "#/components/schemas/BookId"
+        title:
+          type: string
+          minLength: 1
+          maxLength: 100
+        price:
+          $ref: "#/components/schemas/Amount"
+        authors:
+          $ref: "#/components/schemas/Authors"
+        stars:
+          type: number
+          exclusiveMinimum: true
+          minimum: 0
+          maximum: 5
+      required:
+        - id
+        - isbn
+        - title
+        - price
+        - authors
+    Books:
+      type: object  
+      properties:
+        data:
+          type: array
+          minItems: 0
+          maxItems: 100
+          items:
+            $ref: "#/components/schemas/BookSummary"
+    QueryParameterString:
+      type: string
+      maxLength: 100
+      minLength: 1
+    # The complete schema of the book
+    Book:
+      properties:
+        id:
+          $ref: "#/components/schemas/BookId"
+        isbn:
+          $ref: "#/components/schemas/BookId"
+        title:
+          type: string
+          minLength: 1
+          maxLength: 100
+        price:
+          $ref: "#/components/schemas/Amount"
+        authors:
+          $ref: "#/components/schemas/Authors"
+        stars:
+          type: number
+          exclusiveMinimum: true
+          minimum: 0
+          maximum: 5
+        publicationDate:
+          type: string
+          format: date
+        pages:
+          type: integer
+          minimum: 1
+      required:
+        - id
+        - isbn
+        - title
+        - price
+        - authors
+        - publicationDate
+        - pages
+    # A subset of Book
+    # All this could be optimized to avoid duplication errors
+    BookCreate:
+      type: object
+      properties:
+        isbn:
+          $ref: "#/components/schemas/BookId"
+        title:
+          type: string
+          minLength: 1
+          maxLength: 101 # Not the same value as in Book! 
+        price:
+          $ref: "#/components/schemas/Amount"
+        authors:
+          type: array
+          minItems: 1
+          items:
+            $ref: "#/components/schemas/AuthorId"
+        publicationDate:
+          type: string
+          format: date
+        pages:
+          type: integer
+          minimum: 1
+      required:
+        - isbn
+        - title
+        - price
+        - authors
+        - publicationDate
+        - pages
+    # Generic error model
+    # Allows to return multiple errors in one shot and help consumer to fix the problems
+    Errors:
+      required:
+        - errors
+      properties:
+        errors:
+          description: A list of errors
+          type: array
+          minItems: 1
+          items:
+            required:
+              - code
+              - message
+            properties:
+              code:
+                type: string
+                enum:
+                  - required
+                  - incorrect
+                  - unknown
+                  - unexpected
+                description: A (if possible) generic human and machine readable error code
+              message:
+                type: string
+                description: A human readable error message
+              source:
+                title: ErrorSource
+                description: The source of the error
+                required:
+                  - location
+                  - name
+                properties:
+                  location:
+                    type: string
+                    enum:
+                      - path
+                      - query
+                      - body
+                      - header
+                  name:
+                    type: string
+                    description: The name of the property or parameter causing the error
+                  path:
+                    type: string
+                    description: JSON path targeting the source of error (only used when location is `body`), `$.some.path.to.property`` for instance
+  parameters:
+    Title:
+      name: title
+      in: query
+      description: "Complete or partial title, can be typed phonetically"
+      required: false
+      schema:
+        $ref: "#/components/schemas/QueryParameterString"
+  # Responses holds reusable responses
+  responses:
+    UnexpectedError:
+      description: Unexpected error. Consumer may try to send the request again.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Errors"
+          examples:
+            UnexpectedError:
+              summary: An unexpected error
+              value:
+                errors:
+                  - code: unexpected
+                    message: "An expected error occurred, you may try again later"
+    AuthenticationError:
+      description: "Missing, expired, revoked, or incorrect API token"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Errors"
+          examples:
+            MissingTokenError:
+              summary: No Authorization header
+              description: The header may be missing or its name contains a typo error
+              value:
+                errors:
+                  - code: required
+                    location: header
+                    name: Authorization
+                    message: Missing Authorization header
+            IncorrectTokenError:
+              summary: Incorrect token in Authorization header
+              description: "The token may have expired, been revoked or it contains a typo error"
+              value:
+                errors:
+                  - code: incorrect
+                    location: header
+                    name: Authorization
+                    message: Incorrect Authorization header
+    BookNotFoundError:
+      description: No book found for the provided `bookId`
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Errors"
+          examples:
+            BookNotFoundErrorExample:
+              summary: Incorrect book identifier
+              value:
+                errors:
+                  - code: unknown
+                    location: path
+                    name: bookId
+                    message: Unknown bookId
