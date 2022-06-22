@@ -67,8 +67,23 @@ The title or name of our API should define the "boundary" or "scope" of the API.
 We also need to definte the servers, with API versioning in the path for best practice.
 
 ```yaml
+openapi: 3.0.3
 
+info:
+  title: Bookshop
+  version: "1.0"
+  description: |
+    ![OpenAPI Logo](https://avatars3.githubusercontent.com/u/16343502?v=3&s=100)
+
+    A demo _API_ to **discover** the **_[OpenAPI Specification](https://www.openapis.org/)_**.
+
+servers:
+  - description: The base path for all resources
+    url: /bookshop/v1
+
+paths: {}
 ```
+(full description of these portions of the file can be found in [this file](./openapi-books/01-bookshop-initiating-api.openapi.yaml))
 
 ### Building a path to fetch all books, and its response
 
@@ -77,6 +92,18 @@ Questions to consider:
 - What kind of HTTP method (GET, POST, etc) should we use?
 - How should we structure the response?
 - Which status code is more applicable here?
+
+```yaml
+paths:
+  /books:
+    get:
+      summary: Get/Search books
+      operationId: searchBooks
+      responses:
+        "200":
+          description: Books matching search parameters
+```
+(full description of these portions of the file can be found in [this file](./openapi-books/02-bookshop-search-books.openapi.yaml))
 
 Other considerations, for example:
 - should the endpoint to fetch all books contain every detail about every book, or could we send a smaller summary?
@@ -87,6 +114,89 @@ Other considerations, for example:
 What do we send back if no results are found?
 
 What are best practices around status codes to return for a scenario where the endpoint was called successfully but the result list was empty? What about a scenario where we were trying to find one specific book?
+
+
+
+```yaml
+paths:
+  /books:
+    get:
+      summary: Search books
+      operationId: searchBooks
+      responses:
+        "200":
+          description: Books matching search parameters
+          content:
+            application/json:
+                schema:
+                  type: object  
+                  properties:
+                    data:
+                      type: array
+                      minItems: 0
+                      maxItems: 100
+                      items:
+                        properties:
+                          id:
+                            type: string
+                            pattern: (978|979)([0-9]{10})
+                            description: Book's [ISBN 13](https://www.isbn-international.org/content/what-isbn) (a standard book identifier) 
+                          isbn:
+                            type: string
+                            pattern: (978|979)([0-9]{10})
+                            description: Book's [ISBN 13](https://www.isbn-international.org/content/what-isbn) (a standard book identifier) 
+                          title:
+                            type: string
+                            minLength: 1
+                            maxLength: 100
+                          price:
+                            properties:
+                              value:
+                                type: number
+                                minimum: 0
+                              currency:
+                                type: string
+                                description: An ISO 4217 currency code
+                                minLength: 3
+                                maxLength: 3
+                                enum:
+                                  - USD
+                                  - EUR
+                            required:
+                              - value
+                              - currency
+                          authors:
+                            type: array
+                            minItems: 1
+                            items:
+                              properties:
+                                id:
+                                  type: string
+                                  description: A unique id identifying an author
+                                firstName:
+                                  type: string
+                                middleName:
+                                  type: string
+                                lastName:
+                                  type: string
+                              required:
+                                - id
+                                - firstName
+                                - lastName
+                          stars:
+                            type: number
+                            exclusiveMinimum: true
+                            minimum: 0
+                            maximum: 5
+                        required:
+                          - id
+                          - isbn
+                          - title
+                          - price
+                          - authors
+```
+(full description of these portions of the file can be found in [this file](./openapi-books/03-bookshop-search-books-data.openapi.yaml))
+
 
 ### Building a new path to add a book to the database
 
@@ -102,9 +212,102 @@ This is a good point to pause and think about our error responses, and how to ma
 
 As we start to define our error response, maybe we should consider building this as a reusable "component" in OpenAPI so all of our error messages look the same.
 
+```yaml
+paths:
+  /books:
+    get:
+      summary: Search books
+      operationId: searchBooks
+      responses:
+        "200":
+          description: Books matching search parameters
+          content:
+            application/json:
+                schema:
+                  $ref: "#/components/schemas/Books"
+
+components:
+  schemas:
+    BookId:
+      type: string
+      pattern: (978|979)([0-9]{10})
+      description: Book's [ISBN 13](https://www.isbn-international.org/content/what-isbn) (a standard book identifier)
+    Amount:
+      properties:
+        value:
+          type: number
+          minimum: 0
+        currency:
+          type: string
+          description: An ISO 4217 currency code
+          minLength: 3
+          maxLength: 3
+          enum:
+            - USD
+            - EUR
+      required:
+        - value
+        - currency
+    Authors:
+      type: array
+      minItems: 1
+      items:
+        properties:
+          id:
+            type: string
+            description: A unique id identifying an author
+          firstName:
+            type: string
+          middleName:
+            type: string
+          lastName:
+            type: string
+        required:
+          - id
+          - firstName
+          - lastName
+    BookSummary:
+      properties:
+        id:
+          $ref: "#/components/schemas/BookId"
+        isbn:
+          $ref: "#/components/schemas/BookId"
+        title:
+          type: string
+          minLength: 1
+          maxLength: 100
+        price:
+          $ref: "#/components/schemas/Amount"
+        authors:
+          $ref: "#/components/schemas/Authors"
+        stars:
+          type: number
+          exclusiveMinimum: true
+          minimum: 0
+          maximum: 5
+      required:
+        - id
+        - isbn
+        - title
+        - price
+        - authors
+    Books:
+      type: object  
+      properties:
+        data:
+          type: array
+          minItems: 0
+          maxItems: 100
+          items:
+            $ref: "#/components/schemas/BookSummary"
+```
+
 ### Fetching a Single Book
 
-Next, we'll add the path for adding a single book, but let's discuss how much data we should return in the response. Is it enough to send back a 200-series acknowledgement that we've done some work? What if we're still processing some background data like uploading a photo of the book cover?
+How would you add the path for adding a single book?
+
+Let's discuss how much data we should return in the response. Is it enough to send back a 200-series acknowledgement that we've done some work? What if we're still processing some background data like uploading a photo of the book cover?
+
 
 ### Adding an endpoint to Delete a book
 
@@ -142,7 +345,7 @@ Now that we have some working OpenAPI specification work complete, let's take a 
 
 #### If you need a working OpenAPI Specification file
 
-If you've fallen behind this morning, have trouble saving your OpenAPI Specification as a plain text file, or run into an error, you can access [a working example](./books-api-morning.yaml) for everything we have built this morning for the remainder of this workshop.
+If you've fallen behind this morning, have trouble saving your OpenAPI Specification as a plain text file, or run into an error, you can access [working examples](./openapi-books/) for everything we have built this morning for the remainder of this workshop.
 
 ## Get Into Postman
 
@@ -168,19 +371,15 @@ The existing requests will go do our defined server URL, but we can change it, t
 
 Now we can send those requests to the Postman Echo server, and we can save the response, and alter it according to our design specification. What did we want our responses to look like?
 
-Example response for all books:
-```json
-```
+What should a response look like for a single book?
 
-Example response for fetching one book:
-```json
-```
 
 ## Now we can build tests
 
 Once we have an idea of what our responses should look like, we can start to build out some basic testing. We'll go into more detail in the afternoon sessions.
 
 For now, we'll add a simple test to our "get one book" endpoint that ensures we get a successful response.
+
 
 ## Validating Our Schema
 

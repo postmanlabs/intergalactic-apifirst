@@ -1,0 +1,25 @@
+# Initiating the API description
+# OpenAPI's specification version, not the API's one!
+openapi: 3.0.3
+
+info:
+  # The API's name, important to choose, it sets the boundaries of the API
+  title: Bookshop
+  # The version of the API (can be anything as long it's put into a string and it is meaningful for the API versioning strategy)
+  version: "1.0"
+  # A markdown compatible description
+  description: |
+    ![OpenAPI Logo](https://avatars3.githubusercontent.com/u/16343502?v=3&s=100)
+
+    A demo _API_ to **discover** the **_[OpenAPI Specification](https://www.openapis.org/)_**.
+
+# Where the API is exposed
+servers:
+  # A basepath using a relative url and including the API name and major version
+  # That makes the URL user- and API gateway-friendly
+  - description: The base path for all resources
+    url: /bookshop/v1
+
+# The resources and operations wil go there
+# Leaving it empty to avoid a parsing error
+paths: {}

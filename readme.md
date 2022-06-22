@@ -8,7 +8,7 @@ The purpose of the content you're reading right now is so that you have some mat
 
 ## Code of Conduct
 
-Our [Code of Conduct](https://www.postman.com/legal/events-code-of-conduct/) will be strictly enforced throughout the day. Please alert a Postman employee if you experience or witness a violation of our Code of Conduct.
+Our [Code of Conduct](https://go.pstmn.io/spacecamp-conduct) will be strictly enforced throughout the day. Please alert a Postman employee if you experience or witness a violation of our Code of Conduct.
 
 ## Sessions
 
@@ -31,7 +31,7 @@ The afternoon will be broken into two parts where we will take what you've learn
 Each afternoon session is 75 minutes in length, and will be hands-on practice and Q&A for your API-First design, and looking at concepts such as mock servers, advanced testing workflows, monitoring and deployment.
 
 - [Link to notes](./3%20-%20advanced%20workflows.md)
-- [OpenAPI Specification for the Afternoon](./books-api-afternoon.yaml)
+- [OpenAPI Specification for the Afternoon](./openapi-books/books-api-afternoon.yaml)
 
 ## Follow-Along Format
 

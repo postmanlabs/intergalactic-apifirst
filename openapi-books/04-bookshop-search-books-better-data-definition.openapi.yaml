@@ -1,0 +1,106 @@
+# Describing data returned by Search Books more efficiently
+openapi: 3.0.3
+
+info:
+  title: Bookshop
+  version: "1.0"
+  description: |
+    ![OpenAPI Logo](https://avatars3.githubusercontent.com/u/16343502?v=3&s=100)
+
+    A demo _API_ to **discover** the **_[OpenAPI Specification](https://www.openapis.org/)_**.
+
+servers:
+  - description: The base path for all resources
+    url: /bookshop/v1
+
+paths:
+  /books:
+    get:
+      summary: Search books
+      operationId: searchBooks
+      responses:
+        "200":
+          description: Books matching search parameters
+          content:
+            application/json:
+                schema:
+                  $ref: "#/components/schemas/Books"
+
+# Components holds reusable components
+components:
+  # Schemas holds reusable JSON schemas
+  schemas:
+    BookId:
+      type: string
+      pattern: (978|979)([0-9]{10})
+      description: Book's [ISBN 13](https://www.isbn-international.org/content/what-isbn) (a standard book identifier)
+    Amount:
+      properties:
+        value:
+          type: number
+          minimum: 0
+        currency:
+          type: string
+          description: An ISO 4217 currency code
+          minLength: 3
+          maxLength: 3
+          enum:
+            - USD
+            - EUR
+      required:
+        - value
+        - currency
+    Authors:
+      type: array
+      minItems: 1
+      items:
+        properties:
+          id:
+            type: string
+            description: A unique id identifying an author
+          firstName:
+            type: string
+          middleName:
+            type: string
+          lastName:
+            type: string
+        required:
+          - id
+          - firstName
+          - lastName
+    BookSummary:
+      properties:
+        id:
+          $ref: "#/components/schemas/BookId"
+        isbn:
+          $ref: "#/components/schemas/BookId"
+        title:
+          type: string
+          minLength: 1
+          maxLength: 100
+        price:
+          $ref: "#/components/schemas/Amount"
+        authors:
+          $ref: "#/components/schemas/Authors"
+        stars:
+          type: number
+          exclusiveMinimum: true
+          minimum: 0
+          maximum: 5
+      required:
+        - id
+        - isbn
+        - title
+        - price
+        - authors
+    Books:
+      type: object  
+      properties:
+        data:
+          # The Schema of the data property
+          type: array
+          # The array can contain 0 to a hundred element
+          minItems: 0
+          maxItems: 100
+          items:
+            $ref: "#/components/schemas/BookSummary"

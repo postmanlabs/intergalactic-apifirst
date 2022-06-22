@@ -1,6 +1,6 @@
 # Advanced Workflows in Postman
 
-The afternoon sessions will use [this OpenAPI Specification file](./books-api-afternoon.yaml), and we recommend that you import this as a new API within Postman.
+The afternoon sessions will use [this OpenAPI Specification file](./openapi-books/books-api-afternoon.yaml), and we recommend that you import this as a new API within Postman.
 
 ### If you need help
 
@@ -16,7 +16,7 @@ We're going to start by importing the YAML file into Postman, and telling Postma
 
 We're going to talk you through several of Postman's features of API design, development, deployment and monitoring, and more. All of this will be done with the API-First Mindset that we've discussed in our earlier sessions, and we'll take time for questions if time allows.
 
-The list below may not be done in this order, and we will not likely make it through all of this material. Below, we provide links for each of these areas so that you can continue to work within Postman using [this example OpenAPI design](./books-api-afternoon.yaml).
+The list below may not be done in this order, and we will not likely make it through all of this material. Below, we provide links for each of these areas so that you can continue to work within Postman using [this example OpenAPI design](./openapi-books/books-api-afternoon.yaml).
 
 
 **Testing**

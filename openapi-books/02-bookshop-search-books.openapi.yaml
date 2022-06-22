@@ -1,0 +1,27 @@
+# Adding search books operation
+openapi: 3.0.3
+
+info:
+  title: Bookshop
+  version: "1.0"
+  description: |
+    ![OpenAPI Logo](https://avatars3.githubusercontent.com/u/16343502?v=3&s=100)
+
+    A demo _API_ to **discover** the **_[OpenAPI Specification](https://www.openapis.org/)_**.
+
+servers:
+  - description: The base path for all resources
+    url: /bookshop/v1
+
+paths:
+  # It's common to use a plural noun to represent a list of elements (also called a collection)
+  /books:
+    # HTTP method
+    get:
+      summary: Search books
+      # May be used by API gateways and code generators
+      operationId: searchBooks
+      responses:
+        # HTTP Status Code (OK)
+        "200":
+          description: Books matching search parameters

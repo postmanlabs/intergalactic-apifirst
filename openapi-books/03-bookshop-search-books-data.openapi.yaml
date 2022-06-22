@@ -1,0 +1,112 @@
+# Describing data returned by Search Books
+openapi: 3.0.3
+
+info:
+  title: Bookshop
+  version: "1.0"
+  description: |
+    ![OpenAPI Logo](https://avatars3.githubusercontent.com/u/16343502?v=3&s=100)
+
+    A demo _API_ to **discover** the **_[OpenAPI Specification](https://www.openapis.org/)_**.
+
+servers:
+  - description: The base path for all resources
+    url: /bookshop/v1
+
+paths:
+  /books:
+    get:
+      summary: Search books
+      operationId: searchBooks
+      responses:
+        "200":
+          description: Books matching search parameters
+          # This operation returns JSON
+          content:
+            application/json:
+                schema:
+                  # A JSON Schema
+                  # It's not mandatory to tell "it's an object"
+                  # It's recommended to always return an object (avoid list or atomic like string or number as they are not extensible)
+                  type: object  
+                  properties:
+                    data:
+                      # The Schema of the data property
+                      type: array
+                      # The array can contain 0 to a hundred element
+                      minItems: 0
+                      maxItems: 100
+                      items:
+                        # The schema of the elements of the array
+                        properties:
+                          id:
+                            type: string
+                            pattern: (978|979)([0-9]{10})
+                            description: Book's [ISBN 13](https://www.isbn-international.org/content/what-isbn) (a standard book identifier) 
+                          isbn:
+                            # Duplicating information because of our API design guidelines requiring that all resources have an id
+                            # but isbn in itself it an interesting information
+                            type: string
+                            pattern: (978|979)([0-9]{10})
+                            description: Book's [ISBN 13](https://www.isbn-international.org/content/what-isbn) (a standard book identifier) 
+                          title:
+                            type: string
+                            # String length is between 1 and 100
+                            minLength: 1
+                            maxLength: 100
+                          price:
+                            properties:
+                              value:
+                                # A price can't be negative
+                                type: number
+                                minimum: 0
+                              currency:
+                                type: string
+                                description: An ISO 4217 currency code
+                                minLength: 3
+                                maxLength: 3
+                                # Sets the possible values
+                                # Use with caution: what will happen is a value is added in this enumeration?
+                                enum:
+                                  - USD
+                                  - EUR
+                              # Never forget to indicate which properties will always be returned
+                              # If a property is not there, it may not be returned or set to null
+                            required:
+                              - value
+                              - currency
+                          authors:
+                            # Is it a good idea to embed a list inside an element contained in a list?
+                            type: array
+                            minItems: 1
+                            items:
+                              properties:
+                                id:
+                                  type: string
+                                  description: A unique id identifying an author
+                                firstName:
+                                  type: string
+                                middleName:
+                                  type: string
+                                lastName:
+                                  type: string
+                              # Never forget to indicate which properties will always be returned
+                              # If a property is not there, it may not be returned or set to null
+                              required:
+                                - id
+                                - firstName
+                                - lastName
+                          stars:
+                            # Starts is >0 and <= 5 (4.3 for instance)
+                            type: number
+                            exclusiveMinimum: true
+                            minimum: 0
+                            maximum: 5
+                        # Never forget to indicate which properties will always be returned
+                        # If a property is not there, it may not be returned or set to null
+                        required:
+                          - id
+                          - isbn
+                          - title
+                          - price
+                          - authors
