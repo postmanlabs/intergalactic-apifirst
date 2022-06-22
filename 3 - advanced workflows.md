@@ -4,7 +4,7 @@ The afternoon sessions will use [this OpenAPI Specification file](./books-api-af
 
 ### If you need help
 
-If you have trouble implementing something, [please ask for help](./readme.md#need-help-throughout-the-day).
+If you have trouble implementing something, [please ask for help](./getting-help.md).
 
 ## Importing
 
@@ -16,7 +16,7 @@ We're going to start by importing the YAML file into Postman, and telling Postma
 
 We're going to talk you through several of Postman's features of API design, development, deployment and monitoring, and more. All of this will be done with the API-First Mindset that we've discussed in our earlier sessions, and we'll take time for questions if time allows.
 
-The list below may not be done in this order, but we are going to provide links for each of these areas so that you can continue to work within Postman using this example API design.
+The list below may not be done in this order, and we will not likely make it through all of this material. Below, we provide links for each of these areas so that you can continue to work within Postman using [this example OpenAPI design](./books-api-afternoon.yaml).
 
 
 **Testing**

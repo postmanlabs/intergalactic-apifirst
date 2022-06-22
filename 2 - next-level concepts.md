@@ -12,7 +12,7 @@ We are providing samples here which you can copy/paste if you like, but for the 
 
 ### If you get stuck, that's okay!
 
-If you have trouble implementing something, [please ask for help](./readme.md#need-help-throughout-the-day).
+If you have trouble implementing something, [please ask for help](./getting-help.md).
 
 
 ### This Work Will Carry into the Afternoon Sessions

@@ -41,12 +41,10 @@ Since the afternoon will begin with everyone designing the same API, we will sha
 
 ## Need Help Throughout the Day?
 
-We have two ways to get you help.
+See [this guide](./getting-help.md) if you need any assistance throughout the day.
 
-We have a team of Postman employees, who we call "Postmanauts", who are available to help you. Raise your hand, or approach an employee if you're comfortable doing so. We will be careful about social distancing.
+## Feedback
 
-Secondly, we have a [Discord server](https://discord.gg/WBUnS4SUjz) set up specifically for today. If you need help you can drop your question into the appropriate channel there. If you find yourself with some spare time throughout the day, you're welcome to assist other attendees in the Discord community as well.
+Your feedback is vital and very much appreciated. We read all feedback and use your comments to make changes and improvements for future sessions.
 
-### Getting help beyond today
-
-After today's session, the Discord server may not be updated. We invite you to ask questions in our [community forum](https://community.postman.com/).
+Please watch for feedback links throughout the day, and help shape upcoming events!
