@@ -21,7 +21,7 @@ paths:
         - name: author
           in: query
           required: false
-          description: "Complete or partial author name, , can be typed phonetically"
+          description: "Complete or partial author name, can be typed phonetically"
           schema:
             $ref: "#/components/schemas/QueryParameterString"
         - $ref: "#/components/parameters/Title"
