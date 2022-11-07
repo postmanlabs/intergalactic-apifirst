@@ -1,4 +1,4 @@
-# Welcome to Space Camp!
+# Welcome to Postman Intergalactic!
 
 Today's session will be all about the API-First Mindset, and we have several sessions to go through today.
 
@@ -8,7 +8,7 @@ The purpose of the content you're reading right now is so that you have some mat
 
 ## Code of Conduct
 
-Our [Code of Conduct](https://go.pstmn.io/spacecamp-conduct) will be strictly enforced throughout the day. Please alert a Postman employee if you experience or witness a violation of our Code of Conduct.
+Our [Code of Conduct](https://go.pstmn.io/event-conduct) will be strictly enforced throughout the day. Please alert a Postman employee if you experience or witness a violation of our Code of Conduct.
 
 ## Sessions
 
